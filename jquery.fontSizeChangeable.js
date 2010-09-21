@@ -1,49 +1,55 @@
-(function(window, $, undef) {
-	if($ === undef) {
-		throw 'Dépendence non satisfaite : jQuery';
-	}
+(function (window, Error, $, undef) {
+    if ($ === undef) {
+        throw new Error('DÃ©pendence non satisfaite : jQuery');
+    }
 
-	$.fn.fontSizeChangeable = function(triggerUp, triggerDown) {
-		var $this = this,
-		size = 1,
+    function fontSizeChangeable(triggerUp, triggerDown) {
+        var $this = this,
+        size = 1;
 
-		refresh = function() {
-			$this
-				.css('font-size', size+'em');
-		},
+        function refresh() {
+            $this
+                .css('font-size', size + 'em');
+        }
 
-		up = function() {
-			if(size > 1.5)
-				return;
-			size+= 0.05;
-			refresh();
-		},
+        function up() {
+            if (size < 1.5) {
+                size += 0.05;
+                refresh();
+            }
+        }
 
-		down = function() {
-			if(size < 0.7)
-				return;
-			size-= 0.05;
-			refresh();
-		};
+        function down() {
+            if (size > 0.7) {
+                size -= 0.05;
+                refresh();
+            }
+        }
 
-		if(triggerUp !== undef) {
-			$(triggerUp)
-				.click(function() {
-					$this.trigger('fontSizeUp');
-				});
-		}
+        function onTriggerUpClicked() {
+            $this.trigger('fontSizeUp');
+        }
 
-		if(triggerDown !== undef) {
-			$(triggerDown)
-				.click(function() {
-					$this.trigger('fontSizeDown');
-				});
-		}
+        function onTriggerDownClicked() {
+            $this.trigger('fontSizeDown');
+        }
 
-		return this
-			.css('font-size', '1em')
-			.bind('fontSizeUp', up)
-			.bind('fontSizeDown', down);
-	};
+        if (triggerUp !== undef) {
+            $(triggerUp)
+                .click(onTriggerUpClicked);
+        }
 
-})(this, this.jQuery);
+        if (triggerDown !== undef) {
+            $(triggerDown)
+                .click(onTriggerDownClicked);
+        }
+
+        return this
+            .css('font-size', '1em')
+            .bind('fontSizeUp', up)
+            .bind('fontSizeDown', down);
+    }
+
+    $.fn.fontSizeChangeable = $.fn.fontSizeChangeable || fontSizeChangeable;
+
+}(this, this.Error, this.jQuery));
